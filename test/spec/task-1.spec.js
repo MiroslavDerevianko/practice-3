@@ -34,7 +34,6 @@ describe("Task 1: OOP Rover", () => {
 
     it("Should keep initial position when didn't move", () => {
         const r = new Rover(5, 6, EAST);
-
         assert.deepEqual(r.getPosition(), { x: 5, y: 6 });
         r.left().right().right().right();
         assert.deepEqual(r.getPosition(), { x: 5, y: 6 });

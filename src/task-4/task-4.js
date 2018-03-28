@@ -17,7 +17,6 @@ export default class ShoppingCart {
         this.totalEl = rootEl.querySelector(".total");
         this.emptyCartEl = rootEl.querySelector(".empty-cart-message");
         this.removeAllEl = rootEl.querySelector(".remove-all");
-
         this.addEventListeners();
     }
 
@@ -26,6 +25,9 @@ export default class ShoppingCart {
      * @returns {undefined}
      */
     addEventListeners() {
+        this.removeAllEl.onclick = (event) => this.removeAll();
+        this.cartEl.onclick = (event) => this.removeItem(event.target.getAttribute("data-item-id"));
+
         // Change me!
     }
 
@@ -61,6 +63,11 @@ export default class ShoppingCart {
      */
     incrementItem(item) {
         // Change me!
+        const l = [...this.cartEl.children].find((el) => el.getAttribute("data-item-id") === item.id);
+        let qty = Number.parseInt(l.getAttribute('data-item-qty'));
+        ++qty;
+        l.setAttribute('data-item-qty', `${qty}`);
+        l.querySelector('.item-qty').innerHTML = `${qty}`;
     }
 
     /**
@@ -69,6 +76,7 @@ export default class ShoppingCart {
      * @returns {boolean} - true if item is present in shopping cart, false otherwise
      */
     isItemInCart(id) {
+    	return [...this.cartEl.children].some((item) => item.getAttribute("data-item-id") === id);
         // Change me!
     }
 
@@ -78,6 +86,7 @@ export default class ShoppingCart {
      */
     isCartEmpty() {
         // Change me!
+        return ([...this.cartEl.children].length === 0) ? true : false; 
     }
 
     /**
@@ -86,6 +95,8 @@ export default class ShoppingCart {
      */
     removeAll() {
         // Change me!
+        this.cartEl.innerHTML = "";
+        this.updateCartState();
     }
 
     /**
@@ -95,6 +106,9 @@ export default class ShoppingCart {
      */
     removeItem(id) {
         // Change me!
+        let el = [...this.cartEl.children].find((item) => item.getAttribute("data-item-id") === id);
+        this.cartEl.removeChild(el);
+        this.updateCartState();
     }
 
     /**
@@ -113,6 +127,7 @@ export default class ShoppingCart {
      */
     updateTotal() {
         // Change me!
+        this.totalEl.innerHTML = `${this.getTotalSum()}`
     }
 
     /**
@@ -120,6 +135,10 @@ export default class ShoppingCart {
      * @returns {number} Total sum
      */
     getTotalSum() {
+    	return [...this.cartEl.children].reduce((prev, item) => {
+    		let price = Number.parseInt(item.getAttribute('data-item-qty')) * Number.parseInt(item.getAttribute('data-item-price'));
+            return prev + price;
+    	}, 0);
         // Change me!
     }
 
@@ -129,8 +148,9 @@ export default class ShoppingCart {
      */
     updateNoItemsMessage() {
         if (this.isCartEmpty()) {
-            // Change me!
+            this.emptyCartEl.classList.remove("d-none");
         } else {
+        	this.emptyCartEl.classList.add("d-none");
             // Change me!
         }
     }
@@ -141,5 +161,10 @@ export default class ShoppingCart {
      */
     updateRemoveAllButton() {
         // Change me!
+        if (this.isCartEmpty()) {
+            this.removeAllEl.classList.add("d-none");
+        } else {
+            this.removeAllEl.classList.remove("d-none");
+        }
     }
 }
